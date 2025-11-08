@@ -1,0 +1,41 @@
+#game {
+    width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+}
+
+.tile {
+    width: 40px;
+    height: 40px;
+    position: relative; /* important for child player */
+    background-size: cover;
+    background-position: center;
+}
+
+.wall {
+    background: #000000 !important;
+}
+.goal {
+    background: gold !important;
+}
+
+.player {
+    width: 30px;
+    height: 30px;
+    background-color: #0055f3;
+    border-radius: 5px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+.message {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: green;
+    opacity: 0;
+    transition: opacity 0.5s;
+    margin-bottom: 10px;
+}
