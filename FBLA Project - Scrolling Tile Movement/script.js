@@ -45,10 +45,10 @@ function update() {
     let newY = player.y;
 
     // Move player based on keys
-    if (keys["ArrowUp"]) newY--;
-    if (keys["ArrowDown"]) newY++;
-    if (keys["ArrowLeft"]) newX--;
-    if (keys["ArrowRight"]) newX++;
+    if (keys["ArrowUp"] || keys["w"]) newY--;
+    if (keys["ArrowDown"] || keys["s"]) newY++;
+    if (keys["ArrowLeft"] || keys["a"]) newX--;
+    if (keys["ArrowRight"] || keys["d"]) newX++;
 
     // Collision check (optional)
     if (world[newY] && world[newY][newX] === 0) {
@@ -79,9 +79,9 @@ function draw() {
             ctx.fillStyle = tile === 0 ? "#6c9" : "#555";
             ctx.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 
-            // Optional: draw tile border
-            ctx.strokeStyle = "#333";
-            ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            // Optional: draw tile border. The map looks better without this but i'll keep the line here
+            // ctx.strokeStyle = "#333";
+            // ctx.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         }
     }
 
