@@ -188,12 +188,12 @@ function drawMenu() {
 
   // title
   ctx.fillStyle = "white";
-  ctx.font = "48px Arial";
+  ctx.font = "40px 'Press Start 2P'";
   ctx.textAlign = "center";
   ctx.fillText("My Tile Adventure", canvas.width / 2, canvas.height / 2 - 60);
 
   // instructions
-  ctx.font = "24px Arial";
+  ctx.font = "24px 'Press Start 2P'";
   ctx.fillText("Press ENTER to start!", canvas.width / 2, canvas.height / 2 + 20)
 }
 
