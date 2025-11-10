@@ -4,7 +4,8 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 // === CONFIGURATION ===
-const TILE_SIZE = 40; // each tile = 40px (Pokémon uses 16px, but scale doesn’t matter)
+let gameState = "menu";
+const TILE_SIZE = 40;
 const WORLD_COLS = 50;
 const WORLD_ROWS = 50;
 const VISIBLE_COLS = canvas.width / TILE_SIZE;
@@ -40,8 +41,8 @@ const player = {
 };
 
 // === MOVEMENT SETTINGS ===
-const WALK_FRAMES = 16; // 16 frames per tile = Pokémon walk speed
-const RUN_FRAMES = 8; // 8 frames per tile = Pokémon run speed
+const WALK_FRAMES = 16;
+const RUN_FRAMES = 8;
 let frameCount = 0;
 let moving = false;
 let moveDir = { x: 0, y: 0 };
@@ -53,14 +54,27 @@ let cameraY = 0;
 
 // === INPUT ===
 const keys = {};
-document.addEventListener("keydown", (e) => (keys[e.key] = true));
+let showGrid = false; // ✅ global toggle variable
+
+document.addEventListener("keydown", (e) => {
+  keys[e.key] = true;
+
+  // Toggle grid visibility with G key
+  if (e.key.toLowerCase() === "g") {
+    showGrid = !showGrid;
+  }
+
+  // Start game with enter key
+  if (gameState === "menu" && e.key === "Enter") {
+    gameState = "game";
+  }
+});
+
 document.addEventListener("keyup", (e) => (keys[e.key] = false));
 
 function update() {
-  // Handle ongoing movement (pixel by pixel)
   if (moving) {
     frameCount++;
-
     player.pixelX += moveDir.x * speedPerFrame;
     player.pixelY += moveDir.y * speedPerFrame;
 
@@ -75,7 +89,6 @@ function update() {
     return;
   }
 
-  // Handle new movement
   let dx = 0,
     dy = 0;
   if (keys["ArrowUp"] || keys["w"]) dy = -1;
@@ -84,13 +97,11 @@ function update() {
   else if (keys["ArrowRight"] || keys["d"]) dx = 1;
   else return;
 
-  // Prevent diagonal movement
   if (dx !== 0 && dy !== 0) return;
 
   const targetX = player.tileX + dx;
   const targetY = player.tileY + dy;
 
-  // Check wall collision
   if (world[targetY] && world[targetY][targetX] === 0) {
     moveDir = { x: dx, y: dy };
     moving = true;
@@ -101,23 +112,26 @@ function update() {
 
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
-  // Center camera on player’s pixel position
+
+  // Camera follow
   const targetCamX = player.pixelX - canvas.width / 2 + TILE_SIZE / 2;
   const targetCamY = player.pixelY - canvas.height / 2 + TILE_SIZE / 2;
   cameraX += (targetCamX - cameraX) * 0.2;
   cameraY += (targetCamY - cameraY) * 0.2;
 
-  // Clamp camera
+  // Prevents gridlines showing due to subpixel bleeding
+  cameraX = Math.round(cameraX)
+  cameraY = Math.round(cameraY)
+
   cameraX = Math.max(0, Math.min(cameraX, WORLD_COLS * TILE_SIZE - canvas.width));
   cameraY = Math.max(0, Math.min(cameraY, WORLD_ROWS * TILE_SIZE - canvas.height));
 
-  // Draw tiles
   const startCol = Math.floor(cameraX / TILE_SIZE);
   const startRow = Math.floor(cameraY / TILE_SIZE);
   const endCol = startCol + VISIBLE_COLS + 1;
   const endRow = startRow + VISIBLE_ROWS + 1;
 
+  // Draw tiles
   for (let y = startRow; y < endRow; y++) {
     for (let x = startCol; x < endCol; x++) {
       const tile = world[y] && world[y][x];
@@ -131,6 +145,30 @@ function draw() {
     }
   }
 
+// Draw grid overlay (if toggled on)
+if (showGrid) {
+  ctx.strokeStyle = "rgba(0,0,0,0.3)";
+  ctx.lineWidth = 1;
+  
+    // Vertical lines
+  for (let x = startCol; x <= endCol; x++) {
+    const screenX = x * TILE_SIZE - cameraX;
+    ctx.beginPath();
+    ctx.moveTo(screenX, 0);
+    ctx.lineTo(screenX, canvas.height);
+    ctx.stroke();
+  }
+
+  // Horizontal lines
+  for (let y = startRow; y <= endRow; y++) {
+    const screenY = y * TILE_SIZE - cameraY;
+    ctx.beginPath();
+    ctx.moveTo(0, screenY);
+    ctx.lineTo(canvas.width, screenY);
+    ctx.stroke();
+  }
+}
+
   // Draw player
   ctx.fillStyle = "red";
   ctx.fillRect(
@@ -141,9 +179,37 @@ function draw() {
   );
 }
 
+function drawMenu() { 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // background
+  ctx.fillStyle = "#4a8";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // title
+  ctx.fillStyle = "white";
+  ctx.font = "48px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("My Tile Adventure", canvas.width / 2, canvas.height / 2 - 60);
+
+  // instructions
+  ctx.font = "24px Arial";
+  ctx.fillText("Press ENTER to start!", canvas.width / 2, canvas.height / 2 + 20)
+}
+
+
+
+
+
 function gameLoop() {
-  update();
-  draw();
+  if (gameState === "menu") {
+    drawMenu();
+  }
+  else if (gameState === "game") {
+    update()
+    draw()
+  }
+
   requestAnimationFrame(gameLoop);
 }
 
