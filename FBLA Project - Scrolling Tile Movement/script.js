@@ -197,10 +197,6 @@ function drawMenu() {
   ctx.fillText("Press ENTER to start!", canvas.width / 2, canvas.height / 2 + 20)
 }
 
-
-
-
-
 function gameLoop() {
   if (gameState === "menu") {
     drawMenu();
