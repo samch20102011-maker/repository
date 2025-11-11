@@ -31,6 +31,37 @@ for (let y = 0; y < WORLD_ROWS; y++) {
   world.push(row);
 }
 
+const tree = [
+  [0,2,0],
+  [2,2,2],
+  [0,1,0]
+];
+
+const rock = [
+  [1,1],
+  [1,1]
+];
+
+function placeStructure(structure) {
+  const rows = structure.length;
+  const cols = structure[0].length;
+
+  const x = Math.floor(Math.random() * (WORLD_COLS - cols - 1)) + 1;
+  const y = Math.floor(Math.random() * (WORLD_ROWS - rows - 1)) + 1;
+
+  for (let sy = 0; sy < rows; sy++) {
+    for (let sx = 0; sx < cols; sx++) {
+      if (structure[sy][sx] !== 0 && world[y + sy][x + sx] === 0) {
+        world[y + sy][x + sx] = structure[sy][sx];
+      }
+    }
+  }
+}
+
+// Place some random structures
+for (let i = 0; i < 10; i++) placeStructure(tree);
+for (let i = 0; i < 5; i++) placeStructure(rock);
+
 // === PLAYER ===
 const player = {
   tileX: 5,
