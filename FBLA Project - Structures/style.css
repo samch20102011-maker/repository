@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000000;
+}
+
+canvas {
+    border: 2px solid #ffffff;
+    background-color: #000000;
+    image-rendering: pixelated; /* keeps tiles sharp */
+}
