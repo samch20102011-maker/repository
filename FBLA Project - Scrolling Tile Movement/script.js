@@ -20,8 +20,8 @@ for (let y = 0; y < WORLD_ROWS; y++) {
       x === 0 ||
       y === 0 ||
       x === WORLD_COLS - 1 ||
-      y === WORLD_ROWS - 1 ||
-      Math.random() < 0.1
+      y === WORLD_ROWS - 1 
+      //Math.random() < 0.1
     ) {
       row.push(1); // wall
     } else {
@@ -31,36 +31,69 @@ for (let y = 0; y < WORLD_ROWS; y++) {
   world.push(row);
 }
 
-const tree = [
-  [0,2,0],
-  [2,2,2],
-  [0,2.5,0]
-];
-
 const rock = [
   [1,1],
   [1,1]
+];
+
+const tree = [
+  [0,2,0],
+  [2,2,2],
+  [0,2.5,0] // 2 is leaves, 2.5 is wood
+];
+
+const house = [
+  [0,0,3,3,3,0,0], 
+  [0,3,3,3,3,3,0], 
+  [3,3,3,3,3,3,3], 
+  [0,3.1,3.1,3.1,3.1,3.1,0], // 3.1 is walls
+  [0,3.1,3.2,3.1,3.5,3.1,0], // 3.2 is window
+  [0,3.1,3.1,3.1,3.5,3.1,0] // 3.5 is door
+
+];
+
+const shop = [
+  [1,1,1,1]
 ];
 
 function placeStructure(structure) {
   const rows = structure.length;
   const cols = structure[0].length;
 
-  const x = Math.floor(Math.random() * (WORLD_COLS - cols - 1)) + 1;
-  const y = Math.floor(Math.random() * (WORLD_ROWS - rows - 1)) + 1;
+  let x, y, canPlace;
 
-  for (let sy = 0; sy < rows; sy++) {
-    for (let sx = 0; sx < cols; sx++) {
-      if (structure[sy][sx] !== 0 && world[y + sy][x + sx] === 0) {
-        world[y + sy][x + sx] = structure[sy][sx];
+  // Tests positions until finds one that fits
+  for (let attempts = 0; attempts < 100; attempts++) {
+    x = Math.floor(Math.random() * (WORLD_COLS - cols - 1)) + 1;
+    y = Math.floor(Math.random() * (WORLD_ROWS - rows - 1)) + 1;
+
+    canPlace = true;
+    for (let sy = 0; sy < rows; sy++) {
+      for (let sx = 0; sx < cols; sx++) {
+        if (structure[sy][sx] !==0 && world[y + sy][x + sx] !== 0) {
+          canPlace = false;
+          break;
+        }
+      }
+      if (!canPlace) break;
+    }
+    if (canPlace) break; // This means found a valid position
+  }
+  if (canPlace) {
+    for (let sy = 0; sy < rows; sy++) {
+      for (let sx = 0; sx < cols; sx++) {
+        if (structure[sy][sx] !== 0) {
+          world[y + sy][x + sx] = structure[sy][sx];
+        }
       }
     }
   }
 }
 
 // Place some random structures
-for (let i = 0; i < 1; i++) placeStructure(tree);
+for (let i = 0; i < 10; i++) placeStructure(tree);
 for (let i = 0; i < 5; i++) placeStructure(rock);
+for (let i = 0; i < 3; i++) placeStructure(house);
 
 // === PLAYER ===
 const player = {
@@ -171,6 +204,10 @@ function draw() {
       else if (tile === 1) ctx.fillStyle = "#555";
       else if (tile === 2) ctx.fillStyle = "#0f0";
       else if (tile === 2.5) ctx.fillStyle = "#682820ff"
+      else if (tile === 3) ctx.fillStyle = "#aa8624ff"
+      else if (tile === 3.1) ctx.fillStyle = "#dad1bbff"
+      else if (tile === 3.2) ctx.fillStyle = "#05a8e9ff"
+      else if (tile === 3.5) ctx.fillStyle = "#ff7b00ff"
       else ctx.fillStyle = "#aaa"
 
       ctx.fillRect(
