@@ -34,7 +34,7 @@ for (let y = 0; y < WORLD_ROWS; y++) {
 const tree = [
   [0,2,0],
   [2,2,2],
-  [0,1,0]
+  [0,2.5,0]
 ];
 
 const rock = [
@@ -59,7 +59,7 @@ function placeStructure(structure) {
 }
 
 // Place some random structures
-for (let i = 0; i < 10; i++) placeStructure(tree);
+for (let i = 0; i < 1; i++) placeStructure(tree);
 for (let i = 0; i < 5; i++) placeStructure(rock);
 
 // === PLAYER ===
@@ -166,7 +166,13 @@ function draw() {
   for (let y = startRow; y < endRow; y++) {
     for (let x = startCol; x < endCol; x++) {
       const tile = world[y] && world[y][x];
-      ctx.fillStyle = tile === 0 ? "#6c9" : "#555";
+
+      if (tile === 0) ctx.fillStyle = "#6c9";
+      else if (tile === 1) ctx.fillStyle = "#555";
+      else if (tile === 2) ctx.fillStyle = "#0f0";
+      else if (tile === 2.5) ctx.fillStyle = "#682820ff"
+      else ctx.fillStyle = "#aaa"
+
       ctx.fillRect(
         x * TILE_SIZE - cameraX,
         y * TILE_SIZE - cameraY,
@@ -229,12 +235,12 @@ function drawMenu() {
 }
 
 function gameLoop() {
-  if (gameState === "menu") {
-    drawMenu();
-  }
-  else if (gameState === "game") {
+  if (gameState === "game") {
     update()
     draw()
+  }
+  else if (gameState === "menu") {
+    drawMenu();
   }
 
   requestAnimationFrame(gameLoop);
