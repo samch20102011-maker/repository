@@ -43,17 +43,26 @@ const tree = [
 ];
 
 const house = [
-  [0,0,3,3,3,0,0], 
-  [0,3,3,3,3,3,0], 
-  [3,3,3,3,3,3,3], 
-  [0,3.1,3.1,3.1,3.1,3.1,0], // 3.1 is walls
-  [0,3.1,3.2,3.1,3.5,3.1,0], // 3.2 is window
-  [0,3.1,3.1,3.1,3.5,3.1,0] // 3.5 is door
+  [0,0,0,0,0,0,0,0,0],
+  [0,0,0,3,3,3,0,0,0], 
+  [0,0,3,3,3,3,3,0,0], 
+  [0,3,3,3,3,3,3,3,0], 
+  [0,0,3.1,3.1,3.1,3.1,3.1,0,0], // 3.1 is walls
+  [0,0,3.1,3.2,3.1,3.5,3.1,0,0], // 3.2 is window
+  [0,0,3.1,3.1,3.1,3.5,3.1,0,0], // 3.5 is door
+  [0,0,0,0,0,0,0,0,0]
 
 ];
 
 const shop = [
-  [1,1,1,1]
+  [0,0,0,0,0,0,0,0,0,0,0,0,0],
+  [0,4,4,4,4,4,4,4,4,4,4,4,0],
+  [0,4,4,4,4,4,4,4,4,4,4,4,0],
+  [0,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,0],
+  [0,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,0],
+  [0,]
+
+  [0,0,0,0,0,0,0,0,0,0,0,0,0]
 ];
 
 function placeStructure(structure) {
@@ -94,6 +103,7 @@ function placeStructure(structure) {
 for (let i = 0; i < 10; i++) placeStructure(tree);
 for (let i = 0; i < 5; i++) placeStructure(rock);
 for (let i = 0; i < 3; i++) placeStructure(house);
+for (let i = 0; i< 1; i++) placeStructure(shop)
 
 // === PLAYER ===
 const player = {
@@ -208,6 +218,7 @@ function draw() {
       else if (tile === 3.1) ctx.fillStyle = "#dad1bbff"
       else if (tile === 3.2) ctx.fillStyle = "#05a8e9ff"
       else if (tile === 3.5) ctx.fillStyle = "#ff7b00ff"
+      else if (tile === 4) ctx.fillStyle = "#"
       else ctx.fillStyle = "#aaa"
 
       ctx.fillRect(
