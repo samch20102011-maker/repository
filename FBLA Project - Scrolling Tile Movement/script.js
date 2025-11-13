@@ -57,11 +57,11 @@ const house = [
 const houseInterior = [
   [0,0,0,0,0,0,0,0,0],
   [0,3.1,3.1,3.1,3.1,3.1,3.1,3.1,0], 
-  [0,3.1,0,0,4.5,0,0,3.1,0],          
-  [0,3.1,0,0,0,0,0,3.1,0],
-  [0,3.1,0,0,0,0,0,3.1,0],
-  [0,3.1,0,0,0,0,0,3.1,0],
-  [0,3.1,0,0,0,0,0,3.1,0],
+  [0,3.1,3.3,3.3,4.5,3.3,3.3,3.1,0],          
+  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0], // 3.3 is floor
+  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0],
+  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0],
+  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0],
   [0,3.1,3.1,3.1,3.6,3.1,3.1,3.1,0], // 3.6 is exit door
   [0,0,0,0,0,0,0,0,0],
 ];
@@ -80,7 +80,7 @@ const shopInterior = [
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
   [0,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,0],
   [0,4.1,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.1,0],
-  [0,4.1,4.5,4.5,4.4,4.4,4.4,4.4,4.4,4.5,4.5,4.4,4.1,0], // 4.5 is countertop
+  [0,4.1,4.4,4.5,4.5,4.4,4.4,4.4,4.4,4.5,4.5,4.4,4.1,0], // 4.5 is countertop
   [0,4.1,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.1,0],
   [0,4.1,4.1,4.1,4.1,4.1,4.6,4.6,4.1,4.1,4.1,4.1,4.1,0], // 4.6 is exit door
   [0,0,0,0,0,0,0,0,0,0,0,0,0,0]           
@@ -298,7 +298,7 @@ function update() {
 
   let walkableTiles;
   if (currentWorldType === "overworld") walkableTiles = [0, 3.5, 4.2];
-  else if (currentWorldType === "house") walkableTiles = [0, 3.6];
+  else if (currentWorldType === "house") walkableTiles = [3.6, 3.3];
   else if (currentWorldType === "shop") walkableTiles = [4.4, 4.2, 4.6];
 
   if (currentMap[targetY] && walkableTiles.includes(currentMap[targetY][targetX])) {
@@ -346,6 +346,7 @@ function draw() {
       else if (tile === 3.2) ctx.fillStyle = "#05a8e9ff";
       else if (tile === 3.5) ctx.fillStyle = "#ff7b00ff";
       else if (tile === 3.6) ctx.fillStyle = "#ff7b00ff";
+      else if (tile === 3.3) ctx.fillStyle = "#b58963"
 
       else if (tile === 4) ctx.fillStyle = "#b87800";
       else if (tile === 4.1) ctx.fillStyle = "#d6c9a0";
