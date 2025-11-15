@@ -3,6 +3,9 @@ const canvas = document.getElementById("gameCanvas");
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext("2d");
 
+// === SOUND CONFIGURATION ===
+const opendoor = new Audio("sounds/opendoor.mp3");
+
 // === WORLD CONFIGURATION ===
 const TILE_SIZE = 40;
 const WORLD_COLS = 50;
@@ -120,23 +123,25 @@ const playerHouse = [
   [0.1, 0.1, 5, 5, 5, 5, 5, 5, 5, 5, 0.1],
   [0.1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
   [0.1, 0.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0.1], // 5.1 is walls
-  [0.1, 0.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0.1], // 5.5 is window
-  [0.1, 0.1, 5.1, 5.1, 5.2, 5.1, 5.1, 5.1, 5.5, 5.1, 0.1], // 5.2 is door
+  [0.1, 0.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.5, 5.5, 5.1, 0.1], // 5.5 is window
+  [0.1, 0.1, 5.1, 5.1, 5.2, 5.1, 5.1, 5.5, 5.5, 5.1, 0.1], // 5.2 is door
   [0.1, 0.1, 5.1, 5.1, 5.2, 5.1, 5.1, 5.1, 5.1, 5.1, 0.1],
   [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 ];
 
 const playerHouseInterior = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0],
-  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.3 is floor
-  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
-  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
-  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
-  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.4 is exit door
-  [0, 5.1, 5.1, 5.1, 5.4, 5.1, 5.1, 5.1, 5.1, 5.1, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.3 is floor
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], 
+  [0, 5.1, 5.1, 5.1, 5.1, 5.1, 5.4, 5.1, 5.1, 5.1, 5.1, 5.1, 0], // 5.4 is exit door
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ];
+
 
 function placeStructure(structure) {
   const rows = structure.length;
@@ -185,7 +190,7 @@ for (let i = 0; i < 1; i++) placeStructure(overworldShop);
 for (let i = 0; i < 1; i++) placeStructure(playerHouse)
 
 // === GAME STATE CONFIGURATION ===
-let gameState = "game"; // When we showcase, change to menu
+let gameState = "menu"; // When we showcase, change to menu
 
 let currentMap = world; // start in overworld
 let currentWorldType = "overworld"; // "overworld" or "shop"
@@ -244,11 +249,6 @@ document.addEventListener("keydown", (e) => {
   if (e.key.toLowerCase() === "g") {
     showGrid = !showGrid;
   }
-
-  // Start game with enter key
-  if (gameState === "menu" && e.key === "Enter") {
-    gameState = "game";
-  }
 });
 
 document.addEventListener("keyup", (e) => (keys[e.key] = false));
@@ -275,6 +275,7 @@ function update() {
       if (tile === 3.5) {
         lastOverworldX = player.tileX
         lastOverworldY = player.tileY + 1
+        opendoor.play()
 
         startFade(() => {
           currentMap = houseInterior;
@@ -291,7 +292,8 @@ function update() {
       else if (tile === 4.2) {
         lastOverworldX = player.tileX
         lastOverworldY = player.tileY + 1
-        
+        opendoor.play()
+
         startFade(() => {
           currentMap = shopInterior;
           currentWorldType = "shop";
@@ -307,13 +309,14 @@ function update() {
       else if (tile === 5.2) {
         lastOverworldX = player.tileX
         lastOverworldY = player.tileY + 1
+        opendoor.play()
 
         startFade(() => {
           currentMap = playerHouseInterior;
           currentWorldType = "playerhouse"
 
-          player.tileX = 4;
-          player.tileY = 6;
+          player.tileX = 6;
+          player.tileY = 7;
           player.pixelX = player.tileX * TILE_SIZE;
           player.pixelY = player.tileY * TILE_SIZE;
         });
@@ -321,9 +324,11 @@ function update() {
 
       // Leave house
       else if (tile === 3.6) {
+        opendoor.play()
         startFade(() => {
           currentMap = world;
           currentWorldType = "overworld";
+
           player.tileX = lastOverworldX;
           player.tileY = lastOverworldY;
           player.pixelX = player.tileX * TILE_SIZE;
@@ -333,9 +338,11 @@ function update() {
 
       // Leave shop
       else if (tile === 4.6) {
+        opendoor.play()
         startFade(() => {
           currentMap = world;
           currentWorldType = "overworld";
+
           player.tileX = lastOverworldX;
           player.tileY = lastOverworldY;
           player.pixelX = player.tileX * TILE_SIZE;
@@ -345,9 +352,11 @@ function update() {
 
       // Leave player's house
       else if (tile === 5.4) {
+        opendoor.play()
         startFade(() => {
           currentMap = world;
           currentWorldType = "overworld";
+
           player.tileX = lastOverworldX;
           player.tileY = lastOverworldY;
           player.pixelX = player.tileX * TILE_SIZE;
@@ -434,12 +443,12 @@ function draw() {
       else if (tile === 4.5) ctx.fillStyle = "#8b4513"; 
       else if (tile === 4.6) ctx.fillStyle = "#663300";
 
-      else if (tile === 5) ctx.fillStyle = "#f1f3f5ff";
+      else if (tile === 5) ctx.fillStyle = "#5a6d7a";
       else if (tile === 5.1) ctx.fillStyle = "#3994beff";
       else if (tile === 5.2) ctx.fillStyle = "#8b5a2b";
-      else if (tile === 5.3) ctx.fillStyle = "#d6f0fb";
+      else if (tile === 5.3) ctx.fillStyle = "#fbe2d6ff";
       else if (tile === 5.4) ctx.fillStyle = "#8b5a2b";
-      else if (tile === 5.5) ctx.fillStyle = "#05a8e9ff";
+      else if (tile === 5.5) ctx.fillStyle = "#6ed0ff";
 
       else ctx.fillStyle = "#aaa"
 
@@ -490,6 +499,30 @@ if (fadeOpacity > 0) {
 }
 }
 
+// === MENU ===
+let menuSelection = 0
+const menuOptions = ["Play", "Instructions"];
+
+document.addEventListener("keydown", (e) => {
+  if (gameState === "menu") {
+    if (e.key === "ArrowUp") menuSelection = (menuSelection + menuOptions.length - 1) % menuOptions.length;
+    if (e.key === "ArrowDown") menuSelection = (menuSelection + 1) % menuOptions.length;
+    
+    if (e.key === "Enter") {
+      if (menuSelection === 0) gameState = "game";
+      else if (menuSelection === 1) gameState = "instructions";
+  
+    }
+  }
+  else if (gameState === "instructions") {
+    if (e.key === "Escape") gameState = "menu";
+    }
+
+  else if (gameState === "game") {
+    if (e.key === "e") gameState = "inventory";
+  }
+});
+
 function drawMenu() { 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -499,14 +532,70 @@ function drawMenu() {
 
   // title
   ctx.fillStyle = "white";
-  ctx.font = "40px 'Press Start 2P'";
+  ctx.font = "50px 'Press Start 2P'";
   ctx.textAlign = "center";
-  ctx.fillText("My Tile Adventure", canvas.width / 2, canvas.height / 2 - 60);
+  ctx.strokeStyle = "#000000";
+  ctx.lineWidth = 1;
+  ctx.fillText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60);
+  ctx.strokeText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60)
 
-  // instructions
-  ctx.font = "24px 'Press Start 2P'";
-  ctx.fillText("Press ENTER to start!", canvas.width / 2, canvas.height / 2 + 20)
+  // menu options
+  ctx.font = "40px 'Press Start 2P'";
+  menuOptions.forEach((option, i) => {
+    const yPos = canvas.height / 2 + i * 60 + 50;
+    if (i === menuSelection) {
+      ctx.fillStyle = "rgba(0, 116, 248, 1)";
+      ctx.strokeStyle = "#fffb00ff"
+    } else {
+      ctx.fillStyle = "#ffffffff";
+      ctx.strokeStyle = "#000";
+    }
+
+    ctx.fillText(option, canvas.width / 2, yPos);
+    ctx.strokeText(option, canvas.width / 2, yPos)
+  });
 }
+
+function drawInstructions() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#4a8"
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.font = "30px 'Press Start 2P'"
+  ctx.fillText("Instructions", canvas.width / 2, 80);
+  ctx.strokeText("Instructions", canvas.width / 2, 80);
+
+  const instructionsText = [
+  "Arrow Keys = Move",
+  "Shift = Run",
+  "Enter = Interact / Start",
+  "G = Toggle Grid (debug)",
+  "E = Inventory",
+  "",
+  "Objective: Explore, visit shops,",
+  "and take care of your virtual pet!",
+  "",
+  "Press ESC to return to Menu"
+];
+
+ctx.font = "20px 'Press Start 2P'";
+ctx.fillStyle = "white";
+ctx.strokeStyle = "black";
+ctx.lineWidth = 0.5;
+
+instructionsText.forEach((line, i) => {
+  const yPos = 150 + i * 40;
+  ctx.fillText(line, canvas.width / 2, yPos);
+  ctx.strokeText(line, canvas.width / 2, yPos);
+});
+
+}
+
+// === GAMELOOP ===
 
 function gameLoop() {
   if (gameState === "game") {
@@ -515,6 +604,12 @@ function gameLoop() {
   }
   else if (gameState === "menu") {
     drawMenu();
+  }
+  else if (gameState === "instructions") {
+    drawInstructions();
+  }
+  else if (gameState === "inventory") {
+    drawInventory();
   }
 
   requestAnimationFrame(gameLoop);
