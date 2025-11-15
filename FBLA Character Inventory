@@ -1,1 +1,149 @@
+from Inventory import Inventory
+
+# Create the player's inventory
+inv = Inventory()
+coins = 50 # Starting coins
+
+while True:
+    print("What would you like to do?")
+    print("1. View Inventory")
+    print("2. Add Pet Food")
+    print("3. Add Toy")
+    print("4. Remove Toy")
+    print("4. Remove Pet Food")
+    print("6. Exit")
+    print("7. Save Inventory")
+    print("8. Load Inventory")
+    print("9. Visit Store")
+    choice = input("> ")
+    
+    if choice == "1":
+        inv.open_inventory()
+
+    elif choice == "2":
+        inv.add_item("Pet Food")
+
+    elif choice == "3":
+        inv.add_item("Toy")
+
+    elif choice == "4":
+        inv.remove_item("Toy")
+
+    elif choice == "5":
+        inv.remove_item("Pet Food")
+
+    elif choice == "6":
+        print("\nGoodbye!")
+    elif choice == "7":
+        inv.save()
+    elif choice == "8":
+        inv.load()
+    elif choice == "9":
+        coins = store(inv, coins) # CALL THE STORE 
+        break
+
+    else:
+        print("\nInvalid choice, try again.\n")
+    
+    from Inventory import Inventory
+
+    inv = Inventory()
+
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. View Inventory")
+
+        print("\n--- Add Toys ---")
+        print("2, Add Ball")
+        print("3. Add Rope")
+        print("4. Add Plushie")
+        print("5. Add Frisbee")
+        print("6. Add Laser Pointer")
+
+        print("\n--- Remove Toys ---")
+        print("7. Remove Ball")
+        print("8. Remove Rope")
+        print("9. Remove Plushie")
+        print("10. Remove Frisbee")
+        print("11. Remove Laser Pointer")
+
+        print("\n12. Exit")
+
+        choice = input("> ")
+
+        # View Inventory
+        if choice == "1":
+            inv.open_inventory()
+
+        # Add Toys 
+        elif choice == "2":
+            inv.add_item("Ball")
+        elif choice == "3":
+            inv.add_item("Rope")
+        elif choice == "4":
+            inv.add_item("Plushie")
+        elif choice == "5":
+            inv.add_item("Frisbee")
+        elif choice == "6":
+            inv.add_item("Laser Pointer")
+
+        # Remove Toys
+        elif choice == "7":
+            inv.remove_item("Ball")
+        elif choice == "8":
+            inv.remove_item("Rope")
+        elif choice == "9":
+            inv.remove_item("Plushie")
+        elif choice == "10":
+            inv.remove_item("Frisbee")
+        elif choice == "11":
+            inv.remove_item("Laser Pointer")
+        
+        # Exit
+        elif choice == "12":
+            print("\nGoodbye!")
+            break
+
+        else:
+            print("\nInvalid choice, try again.\n")
+        
+    def store(inv, coins):
+        items_for_sale = {
+            "Pet Food": 5,
+            "Toy": 10,
+            "Ball": 15,
+            "Rope": 12,
+            "Plushie": 20
+}
+        while True:
+            print("n\=== PET STORE ===")
+            print(f"Coins: {coins}\n")
+        for name, price in items_for_sale.items():
+                print(f"{name} - {price} coins")
+
+        print("\nType the item name to buy it.")
+        print("Type 'exit' to leave the store.")
+
+        choice = input("> ").capitalize()
+
+        if choice == "Exit":
+           return coins
+    if choice not in items_for_sale:
+        print("Item not found!")
+        continue
+
+    price = items_for_sale[choice]
+
+    if coins < price:
+        print("Not enough coins!")
+        continue
+    coins -= price
+    inv.add_item(choice)
+   
+    print(f"You bought {choice}! Remaining coins: {coins}\n")
+    
+
+
+
+
 
