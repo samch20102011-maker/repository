@@ -32,60 +32,111 @@ for (let y = 0; y < WORLD_ROWS; y++) {
   world.push(row);
 }
 
+// === PLAYER ===
+const player = {
+  tileX: 5,
+  tileY: 5,
+  pixelX: 5 * TILE_SIZE,
+  pixelY: 5 * TILE_SIZE,
+  direction: "down",
+};
+
+// === SET PLAYER'S SPAWN ===
+const spawnTopLeftX = 2;
+const spawnTopLeftY = 2;
+const spawnSquare = 3;
+for (let y = spawnTopLeftY; y < spawnTopLeftY + spawnSquare; y++) {
+  for (let x = spawnTopLeftX; x < spawnTopLeftX + spawnSquare; x++) {
+    world[y][x] = 0.1
+  }
+}
+
+player.tileX = spawnTopLeftX + Math.floor(Math.random() * 3);
+player.tileY = spawnTopLeftY + Math.floor(Math.random() * 3);
+
+player.pixelX = player.tileX * TILE_SIZE;
+player.pixelY = player.tileY * TILE_SIZE;
+
+// === STRUCTURE GENERATION ===
+
 const rock = [
-  [1,1],
-  [1,1]
+  [1, 1],
+  [1, 1]
 ];
 
 const tree = [
-  [0,2,0],
-  [2,2,2],
-  [0,2.5,0] // 2 is leaves, 2.5 is wood
+  [0.1, 2, 0.1], // The 0.1 borders are there to make sure it isnt touching another structure
+  [2, 2, 2],
+  [0.1, 2.5, 0.1] // 2 is leaves, 2.5 is wood
 ];
 
 const house = [
-  [0,0,0,0,0,0,0,0,0],
-  [0,0,0,3,3,3,0,0,0], 
-  [0,0,3,3,3,3,3,0,0], 
-  [0,3,3,3,3,3,3,3,0], // 3 is roof
-  [0,0,3.1,3.1,3.1,3.1,3.1,0,0], // 3.1 is walls
-  [0,0,3.1,3.2,3.1,3.5,3.1,0,0], // 3.2 is window
-  [0,0,3.1,3.1,3.1,3.5,3.1,0,0], // 3.5 is door
-  [0,0,0,0,0,0,0,0,0]
+  [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  [0.1, 0.1, 0.1, 3, 3, 3, 0.1, 0.1, 0.1],
+  [0.1, 0.1, 3, 3, 3, 3, 3, 0.1, 0.1],
+  [0.1, 3, 3, 3, 3, 3, 3, 3, 0.1], // 3 is roof
+  [0.1, 0.1, 3.1, 3.1, 3.1, 3.1, 3.1, 0.1, 0.1], // 3.1 is walls
+  [0.1, 0.1, 3.1, 3.2, 3.1, 3.5, 3.1, 0.1, 0.1], // 3.2 is window
+  [0.1, 0.1, 3.1, 3.1, 3.1, 3.5, 3.1, 0.1, 0.1], // 3.5 is door
+  [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
 ];
 
 const houseInterior = [
-  [0,0,0,0,0,0,0,0,0],
-  [0,3.1,3.1,3.1,3.1,3.1,3.1,3.1,0], 
-  [0,3.1,3.3,3.3,4.5,3.3,3.3,3.1,0],          
-  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0], // 3.3 is floor
-  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0],
-  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0],
-  [0,3.1,3.3,3.3,3.3,3.3,3.3,3.1,0],
-  [0,3.1,3.1,3.1,3.6,3.1,3.1,3.1,0], // 3.6 is exit door
-  [0,0,0,0,0,0,0,0,0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 3.1, 3.1, 3.1, 3.1, 3.1, 3.1, 3.1, 0],
+  [0, 3.1, 3.3, 3.3, 4.5, 3.3, 3.3, 3.1, 0],
+  [0, 3.1, 3.3, 3.3, 3.3, 3.3, 3.3, 3.1, 0], // 3.3 is floor
+  [0, 3.1, 3.3, 3.3, 3.3, 3.3, 3.3, 3.1, 0],
+  [0, 3.1, 3.3, 3.3, 3.3, 3.3, 3.3, 3.1, 0],
+  [0, 3.1, 3.3, 3.3, 3.3, 3.3, 3.3, 3.1, 0],
+  [0, 3.1, 3.1, 3.1, 3.6, 3.1, 3.1, 3.1, 0], // 3.6 is exit door
+  [0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
 const overworldShop = [
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,4,4,4,4,4,4,4,4,4,4,4,4,0], // 4 is roof
-  [0,4,4,4,4,4,4,4,4,4,4,4,4,0], // 4.1 is walls
-  [0,4.1,4.3,4.3,4.1,4.1,4.1,4.1,4.1,4.1,4.3,4.3,4.1,0], // 4.2 is door
-  [0,4.1,4.3,4.3,4.1,4.1,4.2,4.2,4.1,4.1,4.3,4.3,4.1,0], // 4.3 is window
-  [0,4.1,4.1,4.1,4.1,4.1,4.2,4.2,4.1,4.1,4.1,4.1,4.1,0],
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0] // 4.4 is floor
+  [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  [0.1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0.1], // 4 is roof
+  [0.1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0.1], // 4.1 is walls
+  [0.1, 4.1, 4.3, 4.3, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.3, 4.3, 4.1, 0.1], // 4.2 is door
+  [0.1, 4.1, 4.3, 4.3, 4.1, 4.1, 4.2, 4.2, 4.1, 4.1, 4.3, 4.3, 4.1, 0.1], // 4.3 is window
+  [0.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.2, 4.2, 4.1, 4.1, 4.1, 4.1, 4.1, 0.1],
+  [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1] // 4.4 is floor
 ];
+
 
 const shopInterior = [
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  [0,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,4.1,0],
-  [0,4.1,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.1,0],
-  [0,4.1,4.4,4.5,4.5,4.4,4.4,4.4,4.4,4.5,4.5,4.4,4.1,0], // 4.5 is countertop
-  [0,4.1,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.4,4.1,0],
-  [0,4.1,4.1,4.1,4.1,4.1,4.6,4.6,4.1,4.1,4.1,4.1,4.1,0], // 4.6 is exit door
-  [0,0,0,0,0,0,0,0,0,0,0,0,0,0]           
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 0],
+  [0, 4.1, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.1, 0],
+  [0, 4.1, 4.4, 4.5, 4.5, 4.4, 4.4, 4.4, 4.4, 4.5, 4.5, 4.4, 4.1, 0], // 4.5 is countertop
+  [0, 4.1, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.1, 0],
+  [0, 4.1, 4.1, 4.1, 4.1, 4.1, 4.6, 4.6, 4.1, 4.1, 4.1, 4.1, 4.1, 0], // 4.6 is exit door
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]           
 ];
 
+const playerHouse = [
+  [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
+  [0.1, 0.1, 0.1, 5, 5, 5, 5, 5, 5, 0.1, 0.1], // 5 is roof
+  [0.1, 0.1, 5, 5, 5, 5, 5, 5, 5, 5, 0.1],
+  [0.1, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+  [0.1, 0.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0.1], // 5.1 is walls
+  [0.1, 0.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0.1], // 5.5 is window
+  [0.1, 0.1, 5.1, 5.1, 5.2, 5.1, 5.1, 5.1, 5.5, 5.1, 0.1], // 5.2 is door
+  [0.1, 0.1, 5.1, 5.1, 5.2, 5.1, 5.1, 5.1, 5.1, 5.1, 0.1],
+  [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
+];
+
+const playerHouseInterior = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.3 is floor
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.4 is exit door
+  [0, 5.1, 5.1, 5.1, 5.4, 5.1, 5.1, 5.1, 5.1, 5.1, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+];
 
 function placeStructure(structure) {
   const rows = structure.length;
@@ -101,7 +152,12 @@ function placeStructure(structure) {
     canPlace = true;
     for (let sy = 0; sy < rows; sy++) {
       for (let sx = 0; sx < cols; sx++) {
-        if (structure[sy][sx] !==0 && world[y + sy][x + sx] !== 0) {
+        const worldTile = world[y + sy][x + sx];
+        const inSpawnZone =
+        x + sx >= spawnTopLeftX && x + sx < spawnTopLeftX + spawnSquare &&
+        y + sy >= spawnTopLeftY && y + sy < spawnTopLeftY + spawnSquare;
+
+        if (structure[sy][sx] !==0 && (worldTile !==0 || inSpawnZone)) {
           canPlace = false;
           break;
         }
@@ -126,25 +182,7 @@ for (let i = 0; i < 10; i++) placeStructure(tree);
 for (let i = 0; i < 5; i++) placeStructure(rock);
 for (let i = 0; i < 3; i++) placeStructure(house);
 for (let i = 0; i < 1; i++) placeStructure(overworldShop);
-
-// === PLAYER ===
-const player = {
-  tileX: 5,
-  tileY: 5,
-  pixelX: 5 * TILE_SIZE,
-  pixelY: 5 * TILE_SIZE,
-  direction: "down",
-};
-
-// === SET PLAYER'S SPAWN ===
-const spawnTopLeftX = 2;
-const spawnTopLeftY = 2;
-
-player.tileX = spawnTopLeftX + Math.floor(Math.random() * 3);
-player.tileY = spawnTopLeftY + Math.floor(Math.random() * 3);
-
-player.pixelX = player.tileX * TILE_SIZE;
-player.pixelY = player.tileY * TILE_SIZE;
+for (let i = 0; i < 1; i++) placeStructure(playerHouse)
 
 // === GAME STATE CONFIGURATION ===
 let gameState = "game"; // When we showcase, change to menu
@@ -265,6 +303,22 @@ function update() {
         });
       }
 
+      // Enter player's house
+      else if (tile === 5.2) {
+        lastOverworldX = player.tileX
+        lastOverworldY = player.tileY + 1
+
+        startFade(() => {
+          currentMap = playerHouseInterior;
+          currentWorldType = "playerhouse"
+
+          player.tileX = 4;
+          player.tileY = 6;
+          player.pixelX = player.tileX * TILE_SIZE;
+          player.pixelY = player.tileY * TILE_SIZE;
+        });
+      }
+
       // Leave house
       else if (tile === 3.6) {
         startFade(() => {
@@ -288,6 +342,18 @@ function update() {
           player.pixelY = player.tileY * TILE_SIZE;
         });
       }
+
+      // Leave player's house
+      else if (tile === 5.4) {
+        startFade(() => {
+          currentMap = world;
+          currentWorldType = "overworld";
+          player.tileX = lastOverworldX;
+          player.tileY = lastOverworldY;
+          player.pixelX = player.tileX * TILE_SIZE;
+          player.pixelY = player.tileY * TILE_SIZE;
+        });
+      }
     }
   }
     return;
@@ -295,10 +361,10 @@ function update() {
 
   let dx = 0,
     dy = 0;
-  if (keys["ArrowUp"] || keys["w"]) dy = -1;
-  else if (keys["ArrowDown"] || keys["s"]) dy = 1;
-  else if (keys["ArrowLeft"] || keys["a"]) dx = -1;
-  else if (keys["ArrowRight"] || keys["d"]) dx = 1;
+  if (keys["ArrowUp"]) dy = -1;
+  else if (keys["ArrowDown"]) dy = 1;
+  else if (keys["ArrowLeft"]) dx = -1;
+  else if (keys["ArrowRight"]) dx = 1;
   else return;
 
   if (dx !== 0 && dy !== 0) return;
@@ -307,9 +373,10 @@ function update() {
   const targetY = player.tileY + dy;
 
   let walkableTiles;
-  if (currentWorldType === "overworld") walkableTiles = [0, 3.5, 4.2];
+  if (currentWorldType === "overworld") walkableTiles = [0, 0.1, 3.5, 4.2, 5.2];
   else if (currentWorldType === "house") walkableTiles = [3.6, 3.3];
   else if (currentWorldType === "shop") walkableTiles = [4.4, 4.2, 4.6];
+  else if (currentWorldType === "playerhouse") walkableTiles = [5.3, 5.4]
 
   if (currentMap[targetY] && walkableTiles.includes(currentMap[targetY][targetX])) {
     moveDir = {x: dx, y: dy};
@@ -346,6 +413,7 @@ function draw() {
       const tile = currentMap[y] && currentMap[y][x];
 
       if (tile === 0) ctx.fillStyle = "#6c9";
+      else if (tile === 0.1) ctx.fillStyle = "#6c9";
       else if (tile === 1) ctx.fillStyle = "#555";
 
       else if (tile === 2) ctx.fillStyle = "#0f0";
@@ -365,6 +433,13 @@ function draw() {
       else if (tile === 4.4) ctx.fillStyle = "#deb887"; 
       else if (tile === 4.5) ctx.fillStyle = "#8b4513"; 
       else if (tile === 4.6) ctx.fillStyle = "#663300";
+
+      else if (tile === 5) ctx.fillStyle = "#f1f3f5ff";
+      else if (tile === 5.1) ctx.fillStyle = "#3994beff";
+      else if (tile === 5.2) ctx.fillStyle = "#8b5a2b";
+      else if (tile === 5.3) ctx.fillStyle = "#d6f0fb";
+      else if (tile === 5.4) ctx.fillStyle = "#8b5a2b";
+      else if (tile === 5.5) ctx.fillStyle = "#05a8e9ff";
 
       else ctx.fillStyle = "#aaa"
 
