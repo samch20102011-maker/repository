@@ -125,7 +125,26 @@ function placeStructure(structure) {
 for (let i = 0; i < 10; i++) placeStructure(tree);
 for (let i = 0; i < 5; i++) placeStructure(rock);
 for (let i = 0; i < 3; i++) placeStructure(house);
-for (let i = 0; i < 1; i++) placeStructure(overworldShop)
+for (let i = 0; i < 1; i++) placeStructure(overworldShop);
+
+// === PLAYER ===
+const player = {
+  tileX: 5,
+  tileY: 5,
+  pixelX: 5 * TILE_SIZE,
+  pixelY: 5 * TILE_SIZE,
+  direction: "down",
+};
+
+// === SET PLAYER'S SPAWN ===
+const spawnTopLeftX = 2;
+const spawnTopLeftY = 2;
+
+player.tileX = spawnTopLeftX + Math.floor(Math.random() * 3);
+player.tileY = spawnTopLeftY + Math.floor(Math.random() * 3);
+
+player.pixelX = player.tileX * TILE_SIZE;
+player.pixelY = player.tileY * TILE_SIZE;
 
 // === GAME STATE CONFIGURATION ===
 let gameState = "game"; // When we showcase, change to menu
@@ -163,15 +182,6 @@ function updateFade() {
     fading = false;
   }
 }
-
-// === PLAYER ===
-const player = {
-  tileX: 5,
-  tileY: 5,
-  pixelX: 5 * TILE_SIZE,
-  pixelY: 5 * TILE_SIZE,
-  direction: "down",
-};
 
 // === MOVEMENT SETTINGS ===
 const WALK_FRAMES = 16;
@@ -339,7 +349,7 @@ function draw() {
       else if (tile === 1) ctx.fillStyle = "#555";
 
       else if (tile === 2) ctx.fillStyle = "#0f0";
-      else if (tile === 2.5) ctx.fillStyle = "#682820ff;";
+      else if (tile === 2.5) ctx.fillStyle = "#682820ff";
 
       else if (tile === 3) ctx.fillStyle = "#aa8624ff";
       else if (tile === 3.1) ctx.fillStyle = "#dad1bbff";
