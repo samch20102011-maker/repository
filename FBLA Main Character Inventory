@@ -1,0 +1,46 @@
+import json
+class Inventory:
+    def __init__(self):
+        self.items = {}
+
+    def add_item(self, item_name, amount=1):
+        if item_name in self.items:
+            self.items[item_name] += amount
+        else:
+            self.items[item_name] = amount
+        print(f"Added {amount} {item_name}(s).")
+
+    def remove_item(self, item_name, amount=1):
+        if item_name not in self.items:
+            print(f"{item_name} is not in your inventory.")
+            return
+        if self.items[item_name] <= 0:
+            del self.items[item_name]
+
+        print(f"Removed {amount} {item_name}(s).")
+
+    def show(self):
+        if not self.items:
+            print("Inventory is empty.")
+            return
+        print("\nYour Inventory:")
+        for item, qty in self.items.items():
+            print(f" - {item}: {qty}")
+            print ("======================\n")
+        # -------------------------
+        # SAVE INVENTORY
+        # -------------------------
+        def save(self, filename="inventory.json"):
+            with open(filename, "w") as f:
+                json.dump(self.items, f)
+            print("Inventory saved successfully!")
+        # -------------------------
+        # LOAD INVENTORY
+        # -------------------------
+        def load(self, filename="inventory.json"):
+            try:
+                with open(filename, "r") as f:
+                    self.items = json.load(f)
+                print("Inventory loaded successfully!")
+            except FileNotFoundError:
+                print("No save file found. Starting with empty inventory.")
