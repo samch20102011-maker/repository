@@ -1,3 +1,5 @@
+let foodUnits = 3;
+
 const petStats = {
     name: "",
     type: "",
@@ -5,7 +7,7 @@ const petStats = {
     hunger: 100,
     happiness: 100,
     health: 100,
-    inventory: ["Apple", "Ball", "Toy"]
+    inventory: ["Apple", "Ball", "Toy", `Food(${foodUnits})`]
 };
 
 function startingMessage() {
@@ -73,7 +75,6 @@ function updatePetStats() {
   }
 }
 
-//function play() {}
 
 
 // === INVENTORY PAGE ===
@@ -120,6 +121,8 @@ function drawInventory() {
   ctx.font = "20px 'Press Start 2P'";
   ctx.fillText("Press ESC to return", 50, canvas.height - 50)
 }
+
+
 
 // === STATS PAGE ===
 document.addEventListener("keydown", (e) => {
@@ -212,6 +215,102 @@ function updateDaySystem() {
     
 }
 
+// === ACTIONS PAGE ===
+let actionsSelection = 0;
+const actionsOptions = ["Play", "Feed", "Use Item", "Exit Actions Menu"];
+
+document.addEventListener("keydown", (e) => {
+  if (gameState === "actions") {
+    if (e.key === "ArrowUp") actionsSelection = (actionsSelection + actionsOptions.length - 1) % actionsOptions.length;
+    if (e.key === "ArrowDown") actionsSelection = (actionsSelection + 1) % actionsOptions.length;
+
+    if (e.key === "Enter") {
+      doAction(actionsSelection);
+    }
+  }
+});
+
+function drawActions() {
+  // background
+  ctx.fillStyle = "#9090aa2e"
+  ctx.fillRect(30, 30, canvas.width-60, canvas.height-60);
+
+  // Title
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.font = "60px 'Press Start 2P'";
+  ctx.textAlign = "center";
+  ctx.fillText("Actions", canvas.width / 2, 100);
+  ctx.strokeText("Actions", canvas.width / 2, 100);
+
+  // Navigation
+  ctx.font = "40px 'Press Start 2P'";
+  actionsOptions.forEach((option, i) => {
+    const yPos = 200 + i * 70;
+
+    if (i === actionsSelection) {
+      ctx.fillStyle = "#0074f8ff"
+      ctx.strokeStyle = "#fffb00ff";
+    } else {
+      ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+    }
+    ctx.fillText(option, canvas.width / 2, yPos);
+    ctx.strokeText(option, canvas.width / 2, yPos);    
+});
+}
+
+function doAction(index) {
+  const choice = actionsOptions[index];
+
+  if (currentWorldType === "playerhouse") {
+    if (choice === "Play") {
+      if (petStats.hunger > 30) {
+        alert(`You played with ${petStats.name} which made it more happy (+15) but it also got hungry. (-15)`);
+        petStats.happiness += 15;
+        petStats.hunger -= 15;
+    } else {
+      alert("Your pet is too hungry to play right now.");
+    }
+  }
+    else if (choice === "Feed") {
+      if (foodUnits > 0) {
+        foodUnits -= 1;
+        alert(`You fed ${petStats.name} (+20). You now have ${foodUnits} food left.`);
+        petStats.hunger += 20;
+      } else {
+        alert("You don't have any food right now.")
+      }
+    }
+    else if (choice === "Use Item") {
+      alert("Placeholder.")
+    }
+    else if (choice === "Exit Actions Menu") {
+      gameState = "game";
+    }
+  }
+}
+
+/*        // === SHOP PAGE ===
+
+let shopSelection = 0;
+const shopOptions = ["Buy Food - $10", "Buy Toy - $20", "Buy Apple - ", "Exit Shop"]
+
+document.addEventListener("keydown", (e) => {
+  if (gameState === "shopmenu") {
+    if (e.key === "ArrowUp") actionsSelection = (actionsSelection + actionsOptions.length - 1) % actionsOptions.length;
+    if (e.key === "ArrowDown") actionsSelection = (actionsSelection + 1) % actionsOptions.length;
+
+    if (e.key === "Enter") {
+      doAction(actionsSelection);
+    }
+  }
+});
+
+["Apple", "Ball", "Toy", `Food(${foodUnits})`]
+
+*/
 
 // === GAMELOOP ===
 
@@ -238,6 +337,10 @@ function gameLoop() {
   }
   else if (gameState === "stats") {
     drawStats();
+    updatePetStats();
+  }
+  else if (gameState === "actions") {
+    drawActions();
     updatePetStats();
   }
 

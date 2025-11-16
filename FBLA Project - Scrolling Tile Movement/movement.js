@@ -6,8 +6,13 @@ const ctx = canvas.getContext("2d");
 // === SOUND CONFIGURATION ===
 const opendoor = new Audio("sounds/opendoor.mp3");
 
+// === TUTORIAL CONFIGURATION ===
+let foundPlayerHouse = false;
+let foundActionMenu = false;
+let foundShop = false;
+
 // === WORLD CONFIGURATION ===
-const TILE_SIZE = 40;
+const TILE_SIZE = 10;
 const WORLD_COLS = 50;
 const WORLD_ROWS = 50;
 const VISIBLE_COLS = canvas.width / TILE_SIZE;
@@ -110,7 +115,7 @@ const overworldShop = [
 const shopInterior = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 4.1, 0],
-  [0, 4.1, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.1, 0],
+  [0, 4.1, 4.4, 4.4, 4.4, 4.4, 4.7, 4.7, 4.4, 4.4, 4.4, 4.4, 4.1, 0], // 4.7 is buy menu for items
   [0, 4.1, 4.4, 4.5, 4.5, 4.4, 4.4, 4.4, 4.4, 4.5, 4.5, 4.4, 4.1, 0], // 4.5 is countertop
   [0, 4.1, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.4, 4.1, 0],
   [0, 4.1, 4.1, 4.1, 4.1, 4.1, 4.6, 4.6, 4.1, 4.1, 4.1, 4.1, 4.1, 0], // 4.6 is exit door
@@ -133,7 +138,7 @@ const playerHouseInterior = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   [0, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 5.1, 0],
   [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.3 is floor
-  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
+  [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.6, 5.3, 5.3, 5.3, 5.3, 5.1, 0], // 5.6 is actions menu for pet
   [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
   [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
   [0, 5.1, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.3, 5.1, 0],
@@ -183,11 +188,12 @@ function placeStructure(structure) {
 }
 
 // Place some random structures
-for (let i = 0; i < 20; i++) placeStructure(tree);
-for (let i = 0; i < 5; i++) placeStructure(rock);
 for (let i = 0; i < 3; i++) placeStructure(house);
 for (let i = 0; i < 1; i++) placeStructure(overworldShop);
 for (let i = 0; i < 1; i++) placeStructure(playerHouse)
+for (let i = 0; i < 20; i++) placeStructure(tree);
+for (let i = 0; i < 5; i++) placeStructure(rock);
+
 
 // === GAME STATE CONFIGURATION ===
 let gameState = "menu"; // When we showcase, change to menu
@@ -309,14 +315,18 @@ function update() {
 
       // Enter player's house
       else if (tile === 5.2) {
-        lastOverworldX = player.tileX
-        lastOverworldY = player.tileY + 1
+        lastOverworldX = player.tileX;
+        lastOverworldY = player.tileY + 1;
         opendoor.currentTime = 0;
-        opendoor.play()
+        opendoor.play();
+        if (foundPlayerHouse === false) {
+          alert("Now that you've found your house, go on the yellow square to view the action menu for your pet.")
+          foundPlayerHouse = true;
+        }
 
         startFade(() => {
           currentMap = playerHouseInterior;
-          currentWorldType = "playerhouse"
+          currentWorldType = "playerhouse";
 
           player.tileX = 6;
           player.tileY = 7;
@@ -369,6 +379,25 @@ function update() {
           player.pixelY = player.tileY * TILE_SIZE;
         });
       }
+
+      // Actions menu in player's house
+      else if (tile === 5.6) {
+        if (foundActionMenu === false) {
+          alert("You've completed the tutorial. Good luck to you and your pet!");
+          foundActionMenu = true;
+        }
+        gameState = "actions";
+      }
+
+      // Buy menu in shop
+      else if (tile === 4.7) {
+        if (foundShop === false) {
+          alert("You've found the shop. This is where you can buy items like food or toys for your pet");
+          foundShop = true;
+        }
+        gameState = "shopmenu"
+      }
+
     }
   }
     return;
@@ -391,7 +420,7 @@ function update() {
   if (currentWorldType === "overworld") walkableTiles = [0, 0.1, 3.5, 4.2, 5.2];
   else if (currentWorldType === "house") walkableTiles = [3.6, 3.3];
   else if (currentWorldType === "shop") walkableTiles = [4.4, 4.2, 4.6];
-  else if (currentWorldType === "playerhouse") walkableTiles = [5.3, 5.4]
+  else if (currentWorldType === "playerhouse") walkableTiles = [5.3, 5.4, 5.6]
 
   if (currentMap[targetY] && walkableTiles.includes(currentMap[targetY][targetX])) {
     moveDir = {x: dx, y: dy};
@@ -455,8 +484,10 @@ function draw() {
       else if (tile === 5.3) ctx.fillStyle = "#fbe2d6ff";
       else if (tile === 5.4) ctx.fillStyle = "#8b5a2b";
       else if (tile === 5.5) ctx.fillStyle = "#6ed0ff";
+      else if (tile === 5.6) ctx.fillStyle = "#dfc75eff";
 
-      else ctx.fillStyle = "#aaa"
+
+      else ctx.fillStyle = "#aaa" // Placeholder if no color is given
 
       ctx.fillRect(
         x * TILE_SIZE - cameraX,
@@ -517,7 +548,8 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       if (menuSelection === 0) {
         startingMessage();
-        petPrompt()
+        petPrompt();
+        alert("To start off, let's find your blue house.");
 
         if (petStats.name) {
           lastStatUpdate = Date.now();
@@ -606,8 +638,8 @@ function drawInstructions() {
   "Shift = Run",
   "Enter = Interact / Start",
   "G = Toggle Grid (debug)",
-  "E = Inventory",
-  "",
+  "E = View Inventory",
+  "C = View Stats",
   "", // In these three blank spaces we can write new controls if we add new features
   "",
   "Press ESC to return to Menu"
