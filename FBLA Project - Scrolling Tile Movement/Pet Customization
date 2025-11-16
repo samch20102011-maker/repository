@@ -1,1 +1,129 @@
+const petStats = {
+    name: "",
+    color: "Brown",
+    fur: "Short",
+    accessory: "none",
+    age: 0,
+};
+let gameState = "menu"; // or whatever you already have
+if(gameState === "customization") {
+    drawCustomizationMenu();
+
+}
+document.addEventListener("keydown", (e) => {
+    if(gameState === "game") {
+        if (e.key.toLowerCase() === "c") {
+            gameState = "customization";
+
+        }
+    } else if (gameState === "customization") {
+        if (e.key === "Escape") {
+            gameState = "game";
+
+        }
+    }
+});
+
+const customizationOptions = [
+    "Name",
+    "Color",
+    "Fur Type",
+    "Accessory",
+];
+
+let selectedOption = 0;
+
+function drawCustomizationMenu() {
+    ctx.fillStyle = "#333";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = "26px 'Press Start 2P'";
+    ctx.fillStyle = "White";
+    ctx.textAlign = "left";
+    ctx.fillText("PET CUSTOMIZATION", 40, 60);
+    for (let i = 0; i < customizationOptions.length; i++) {
+        if (i === selectedOption) {
+            ctx.fillStyle = "Yellow";
+        } else {
+            ctx.fillStyle = "White";
+        }
+
+        ctx.fillText(customizationOptions[i], 60, 120 + i * 40);
+    }
+}
+document.addEventListener("keydown", (e) => {
+    if (gameState === "customization") {
+        if (e.key === "ArrowUp") {
+            selectedOption = (selectedOption -1 + customizationOptions.length) % customizationOptions.length;
+        }
+        if (e.key === "ArrowDown") {
+            selectedOption = (selectedOption +1) % customizationOptions.length;
+        }
+        drawCustomizationMenu();
+    }
+});
+
+const furTypes = ["Short", "medium", "long"];
+const colors = ["brown", "black", "white", "golden"];
+const accessories = ["none", "bow", "hat", "glasses"];
+
+let colorIndex = 0;
+let furIndex = 0;
+let accessoryIndex = 0;
+
+document.addEventListener("keydown", (e) => {
+    if (gameState === "customization" && e.key === "Enter") {
+
+        if (selectedOption === 1) { // color
+            colorIndex = (colorIndex + 1) % colors.length;
+            petStats.color = colors[colorIndex];
+        }
+        if (selectedOption === 2) { // fur type
+            furIndex = (furIndex +1) % furTypes.length;
+            petStats.fur = furTypes[furIndex];
+        }
+        if (selectedOption === 3) { // accessory
+            accessoryIndex = (accessoryIndex +1) % accessories.length;
+            petStats.accessory = accessories[accessoryIndex];
+        
+    }
+    let typingName = false;
+    if (selectedOption === 0) { // name}
+        typingName = true;
+    }
+    document.addEventListener("keydown", (e) => {
+        if (gameState === "customization && typingName") {
+            if (e.key === "Enter") {
+                typingName = false;
+                return;
+            }
+            if (e.key === "Backspace") {
+                petStats.name = petStats.name.slice(0, -1);
+                return;
+            }
+            if (e.key.length === 1) {
+                petStats.name += e.key;
+            }
+         }
+    });
+
+drawPetPreview();
+
+function drawPetPreview() {
+    ctx.fillStyle = petStats.color;
+    ctx.fillRect(400, 200, 120, 120); // body square
+
+    // accessoru
+    if (petStats.accessory === "hat") {
+        ctx.fillStyle = "Black";
+        ctx.fillRect(430, 160, 60, 40);
+
+    }
+}
+document.addEventListener("keydown", (e) => {
+    if (gameState === "customization" && e.key === "Escape") {
+        gameState = "game";
+    }
+
+});
 
