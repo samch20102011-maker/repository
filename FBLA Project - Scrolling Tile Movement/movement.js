@@ -193,7 +193,7 @@ for (let i = 0; i < 1; i++) placeStructure(playerHouse)
 let gameState = "menu"; // When we showcase, change to menu
 
 let currentMap = world; // start in overworld
-let currentWorldType = "overworld"; // "overworld" or "shop"
+let currentWorldType = "overworld"; // if inside a building, this changes
 
 let fadeOpacity = 0;
 let fading = false;
@@ -532,9 +532,9 @@ function drawMenu() {
 
   // title
   ctx.fillStyle = "white";
-  ctx.font = "50px 'Press Start 2P'";
+  ctx.font = "100px 'Pixelify Sans'";
   ctx.textAlign = "center";
-  ctx.strokeStyle = "#000000";
+  ctx.strokeStyle = "black";
   ctx.lineWidth = 1;
   ctx.fillText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60);
   ctx.strokeText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60)
@@ -599,6 +599,7 @@ instructionsText.forEach((line, i) => {
 
 function gameLoop() {
   if (gameState === "game") {
+    updateDaySystem()
     update()
     draw()
   }
