@@ -11,3 +11,17 @@ canvas {
     border: 2px solid #ffffff;
     background-color: #000000;
 }
+
+#dayDisplay {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Centers it */
+  font-family: "Press Start 2P";
+  font-size: 40px;
+  color: white;
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none; /* Prevents any interaction */
+  text-shadow: 3px 3px 0px black;
+}

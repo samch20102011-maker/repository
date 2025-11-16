@@ -47,7 +47,7 @@ function drawInventory() {
   ctx.fillText(`Happiness: ${petStats.happiness}`, 50, 230);
   ctx.fillText(`Health: ${petStats.health}`, 50, 280);
   ctx.fillText(`Inventory:`, 50, 380);
-
+  
   // Inventory
   petStats.inventory.forEach((item, i) => {
     ctx.fillText(`- ${item}`, 50, 430 + i * 40);
@@ -63,12 +63,25 @@ let money = 100;
 const DAY_DURATION_MS = 60000; // This is 1 minute in milliseconds
 let lastDayTime = Date.now();
 
+function showDay(dayNumber) {
+  const dayDisplay = document.getElementById("dayDisplay");
+  dayDisplay.textContent = "Day " + dayNumber;
+
+  dayDisplay.style.opacity = "1";
+
+  setTimeout(() => {
+    dayDisplay.style.opacity = "0";
+  }, 5000);
+}
+
 function updateDaySystem() {
   const now = Date.now(); // Milliseconds since the unix epoch (Beginning of january 1, 1970 UTC)
   if (now - lastDayTime >= DAY_DURATION_MS) {
     day++;
     money += 100; // give 100 money each day
     lastDayTime = now;
+
+    showDay(day)
   }
 
   ctx.fillStyle = "white";
@@ -82,8 +95,5 @@ function updateDaySystem() {
   ctx.textAlign = "right";
   ctx.textBaseline = "bottom";
   ctx.fillText(`$${money}`, canvas.width - 20, canvas.height - 20);
-
-
-  
     
 }

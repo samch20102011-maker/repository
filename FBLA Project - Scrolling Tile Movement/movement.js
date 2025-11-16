@@ -585,7 +585,7 @@ function drawInstructions() {
   ctx.lineWidth = 1;
   ctx.font = "30px 'Press Start 2P'"
   ctx.fillText("Instructions", canvas.width / 2, 80);
-  ctx.strokeText("Instructions", canvas.width / 2, 80);
+  ctx.strokeText("Instructions", canvas.width / 2, 80)
 
   const instructionsText = [
   "Arrow Keys = Move",
@@ -617,9 +617,10 @@ instructionsText.forEach((line, i) => {
 
 function gameLoop() {
   if (gameState === "game") {
-    update()
-    draw()
-    updateDaySystem()
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    update();
+    draw();
+    updateDaySystem();
 
   }
   else if (gameState === "menu") {
