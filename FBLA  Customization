@@ -1,0 +1,100 @@
+public class Pet{
+    private String name;
+    private String type;
+    private String color;
+
+    public Pet() {
+        this.name = "Fluffy";
+        this.type = "Dog";
+        this.color = "Brown";
+
+    }
+}
+
+    public String getName() {
+        return name;
+    
+    }
+    
+    public String getType() {
+        return type;
+    }
+
+    public String getColor() {
+        return color;
+    }
+    public void setName(String name) {
+        this.name = name;
+
+    }
+    public void setType(String type) {
+        this.type = type;
+
+    }
+    public void setColor(String color) {
+        this.color = color;
+
+    }
+import java.util.Scanner;
+
+public class Main {
+    public static void customizePet(Pet pet, Scanner scanner) {
+        while (true) {
+            System.out.printIn("\n=== Customize Yout Pet ===");
+            System.out.printIn("Current name: " +pet.getName());
+            System.out.printIn("Current type: " + pet.getType());
+            System.out.printIn("Current color: " + pet.getColor());
+            System.out.printIn("\n1. Change Name");
+            System.out.printIn("2. Change Type");
+            System.out.printIn("3. Change Color");
+            System.out.printIn("4. Exit Customization\n");
+
+            System.out.print("> ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.print("Enter new name: ");
+                    pet.setName(scanner.nextLine());
+                    break;
+                    case "2":
+                        System.out.print("Choose a new type:");
+                        case "1": pet.setType("Dog"); break;
+                        case "2": pet.setType("Cat"); break;
+                        case "3": pet.setType("Bird"); break;
+                        case "4": pet.setType("Fish"); break;
+                        default: System.out.println("Invalid choice!");
+            }
+                    break;
+                    case "3":
+                        System.out.printIn(Choose a pet color:");
+                        System.out.printIn("1. Brown\n2. White\n3. Black\n4. Golden");
+                        System.out.print("> ");
+                        String colorChoice = scanner.nextLine();
+                        swtich (colorChoice) {
+                            case "1": pet.setColor("Brown"); break;
+                            case "2": pet.setColor("White"); break;
+                            case "3": pet.setColor("Black"); break;
+                            case "4": pet.setColor("Golden"); break;
+                            default: System.out.printIn("Invaild choice!");
+                        }
+                        break;
+                case "4":
+                    System.out.printIn("Exiting customization...");
+                    return;
+                default:
+                    System.out.printIn("Invaild choice!");
+        }
+    }
+}
+
+public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    Pet pet = new Pet(); // default pet
+    customizePet(pet, scanner);
+    System.out.printIn("\nFinal Pet Settings:");
+    System.out.printIn("Name: " +pet.getName());
+    System.out.printIn("Type: " + pet.getType());
+    System.out.printIn("Color: " +pet.getColor());
+    scanner.close();
+           }
