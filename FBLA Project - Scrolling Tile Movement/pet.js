@@ -1,4 +1,9 @@
-let foodUnits = 3;
+const inventory = {
+  foodUnits: 3,
+  apples: 1,
+  balls: 1,
+  toys: 1,
+};
 
 const petStats = {
     name: "",
@@ -7,7 +12,7 @@ const petStats = {
     hunger: 100,
     happiness: 100,
     health: 100,
-    inventory: ["Apple", "Ball", "Toy", `Food(${foodUnits})`]
+    inventory: [`Apple(${inventory.apples})`, `Ball(${inventory.balls})`, `Toy(${inventory.toys})`, `Food(${inventory.foodUnits})`]
 };
 
 function startingMessage() {
@@ -50,8 +55,8 @@ function petPrompt() {
 
 
 // === UPDATE STATS ===
-let hungerDecay = 1;
-let happinessDecay = 0.5;
+let hungerDecay = 2;
+let happinessDecay = 1;
 
 let lastStatUpdate = Date.now();
 const statUpdateMS = 2000; // Updates every 2 seconds
@@ -98,8 +103,6 @@ document.addEventListener("keydown", (e) => {
 });
 
 function drawInventory() {
-  //ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   // Background
   ctx.fillStyle = "#9090aa2e";
   ctx.fillRect(30, 30, canvas.width-60, canvas.height-60);
@@ -110,17 +113,21 @@ function drawInventory() {
   ctx.textAlign = "left";
   ctx.font = "30px 'Press Start 2P'";
 
-  // Stats, the numbers at the end are x,y position of the text
+  // Title
   ctx.fillText(`Inventory:`, 50, 80);
 
   // Inventory
-  petStats.inventory.forEach((item, i) => {
-    ctx.fillText(`- ${item}`, 50, 130 + i * 40);
-  });
+  let y = 130;
+  for (let key in inventory) {
+    let itemName = key.charAt(0).toUpperCase() + key.slice(1); // Capitalize
+    ctx.fillText(`- ${itemName}: ${inventory[key]}`, 50, y);
+    y += 40;
+  }
 
   ctx.font = "20px 'Press Start 2P'";
   ctx.fillText("Press ESC to return", 50, canvas.height - 50)
 }
+
 
 
 
@@ -217,7 +224,7 @@ function updateDaySystem() {
 
 // === ACTIONS PAGE ===
 let actionsSelection = 0;
-const actionsOptions = ["Play", "Feed", "Use Item", "Exit Actions Menu"];
+const actionsOptions = ["Play", "Feed", "Use Item", "Exit"];
 
 document.addEventListener("keydown", (e) => {
   if (gameState === "actions") {
@@ -275,42 +282,132 @@ function doAction(index) {
     }
   }
     else if (choice === "Feed") {
-      if (foodUnits > 0) {
-        foodUnits -= 1;
-        alert(`You fed ${petStats.name} (+20). You now have ${foodUnits} food left.`);
+      if (inventory.foodUnits > 0) {
+        inventory.foodUnits -= 1;
+        alert(`You fed ${petStats.name} (+20). You now have ${inventory.foodUnits} food left.`);
         petStats.hunger += 20;
       } else {
         alert("You don't have any food right now.")
       }
     }
     else if (choice === "Use Item") {
-      alert("Placeholder.")
+      useItem()
     }
-    else if (choice === "Exit Actions Menu") {
+    else if (choice === "Exit") {
       gameState = "game";
     }
   }
 }
 
-/*        // === SHOP PAGE ===
-
-let shopSelection = 0;
-const shopOptions = ["Buy Food - $10", "Buy Toy - $20", "Buy Apple - ", "Exit Shop"]
+// === USE ITEMS SYSTEM ===
+let useItemSelection = 0;
+let useItemOptions = [
+  "Food",
+  "Toy",
+  "Ball",
+  "Apple",
+  "Exit"
+];
 
 document.addEventListener("keydown", (e) => {
-  if (gameState === "shopmenu") {
-    if (e.key === "ArrowUp") actionsSelection = (actionsSelection + actionsOptions.length - 1) % actionsOptions.length;
-    if (e.key === "ArrowDown") actionsSelection = (actionsSelection + 1) % actionsOptions.length;
+  if (gameState === "shop") {
+    if (e.key === "ArrowUp") shopSelection = (shopSelection + shopOptions.length - 1) % shopOptions.length;
+    if (e.key === "ArrowDown") shopSelection = (shopSelection + 1) % shopOptions.length;
 
     if (e.key === "Enter") {
-      doAction(actionsSelection);
+      doShopAction(shopSelection)
     }
   }
 });
 
-["Apple", "Ball", "Toy", `Food(${foodUnits})`]
+// === SHOP PAGE ===
+let shopSelection = 0;
+const shopOptions = [
+  "Buy Food - $20", 
+  "Buy Toy - $15",
+  "Buy Ball - $15",
+  "Buy Apple - $10", 
+  "Exit"]
 
-*/
+document.addEventListener("keydown", (e) => {
+  if (gameState === "shop") {
+    if (e.key === "ArrowUp") shopSelection = (shopSelection + shopOptions.length - 1) % shopOptions.length;
+    if (e.key === "ArrowDown") shopSelection = (shopSelection + 1) % shopOptions.length;
+
+    if (e.key === "Enter") {
+      doShopAction(shopSelection)
+    }
+  }
+});
+
+function drawShop() {
+  // Background
+  ctx.fillStyle = "#9090aa2e";
+  ctx.fillRect(30, 30, canvas.width - 60, canvas.height - 60);
+
+  // Title
+  ctx.fillStyle = "white";
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.font = "60px 'Press Start 2P'";
+  ctx.textAlign = "center";
+  ctx.fillText("Shop", canvas.width / 2, 100);
+  ctx.strokeText("Shop", canvas.width / 2, 100);
+
+  // Options
+  ctx.font = "40px 'Press Start 2P'";
+  shopOptions.forEach((option, i) => {
+    const yPos = 200 + i * 70;
+
+    if (i === shopSelection) {
+      ctx.fillStyle = "#0074f8ff";
+      ctx.strokeStyle = "#fffb00ff";
+    } else {
+      ctx.fillStyle = "white";
+      ctx.strokeStyle = "black";
+    }
+
+    ctx.fillText(option, canvas.width / 2, yPos);
+    ctx.strokeText(option, canvas.width / 2, yPos);
+  });
+}
+
+function doShopAction(index) {
+  const choice = shopOptions[index]
+
+  
+  if (choice.includes("Food")) {
+    if (money >= 20) {
+      money -= 20;
+      inventory.foodUnits += 1;
+      alert(`You bought 1 food. You now have ${inventory.foodUnits} food.`);
+    } else alert("Not enough money!");
+
+  } else if (choice.includes("Toy")) {
+    if (money >= 15) {
+      money -= 15;
+      inventory.toys += 1;
+      alert("You bought a Toy!");
+    } else alert("Not enough money!");
+
+  } else if (choice.includes("Ball")) {
+    if (money >= 15) {
+      money -= 15;
+      inventory.balls += 1;
+      alert("You bought a Ball!");
+    } else alert("Not enough money!");
+
+  } else if (choice.includes("Apple")) {
+    if (money >= 10) {
+      money -= 10;
+      inventory.apples += 1;
+      alert("You bought an Apple!");
+    } else alert("Not enough money!");
+
+  } else if (choice === "Exit") {
+    gameState = "game";
+  }
+}
 
 // === GAMELOOP ===
 
@@ -341,6 +438,10 @@ function gameLoop() {
   }
   else if (gameState === "actions") {
     drawActions();
+    updatePetStats();
+  }
+  else if (gameState === "shop") {
+    drawShop();
     updatePetStats();
   }
 

@@ -12,7 +12,7 @@ let foundActionMenu = false;
 let foundShop = false;
 
 // === WORLD CONFIGURATION ===
-const TILE_SIZE = 40;
+const TILE_SIZE = 10;
 const WORLD_COLS = 50;
 const WORLD_ROWS = 50;
 const VISIBLE_COLS = canvas.width / TILE_SIZE;
@@ -300,6 +300,10 @@ function update() {
         lastOverworldY = player.tileY + 1
         opendoor.currentTime = 0;
         opendoor.play()
+        if (foundShop === false) {
+          alert("You've found the shop. This is where you can buy items like food or toys for your pet.");
+          foundShop = true;
+        }
 
         startFade(() => {
           currentMap = shopInterior;
@@ -390,11 +394,7 @@ function update() {
 
       // Buy menu in shop
       else if (tile === 4.7) {
-        if (foundShop === false) {
-          alert("You've found the shop. This is where you can buy items like food or toys for your pet");
-          foundShop = true;
-        }
-        gameState = "shopmenu"
+        gameState = "shop"
       }
 
     }
@@ -418,7 +418,7 @@ function update() {
   let walkableTiles;
   if (currentWorldType === "overworld") walkableTiles = [0, 0.1, 3.5, 4.2, 5.2];
   else if (currentWorldType === "house") walkableTiles = [3.6, 3.3];
-  else if (currentWorldType === "shop") walkableTiles = [4.4, 4.2, 4.6];
+  else if (currentWorldType === "shop") walkableTiles = [4.4, 4.2, 4.6, 4.7];
   else if (currentWorldType === "playerhouse") walkableTiles = [5.3, 5.4, 5.6]
 
   if (currentMap[targetY] && walkableTiles.includes(currentMap[targetY][targetX])) {
