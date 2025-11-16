@@ -1,0 +1,90 @@
+const petStats = {
+    name: "",
+    age: 0,
+    hunger:100,
+    happiness:100,
+    health: 100,
+    isSick: false,
+    sicknessLevel: 0, // 0-100
+};
+
+function updateSickness() {
+    if(!petStats.isSick) {
+        const chance = Math.random();
+        if(chance < 0.001) { // 10% chance per tick}
+            petStats.isSick = true;
+            petStats.sicknessLevel = 20;
+        }
+    } else {
+        petStats.sicknessLevel += 0.01;
+        petStats.health -+ 0.02;
+        petStats.happiness -+ 0.01;
+
+    }
+
+}
+
+let gameState = "game"; // existing
+
+// later:
+if (gameState === "vet") {
+    drawVetMenu();
+
+}
+document.addEventListener("keydown", (e) => {
+    if (gameState === "game" && e.key.toLowerCase() === "v") {
+        if (petStats.isSick) {
+            gameState = "vet";
+        }
+    }
+});
+
+function drawVetMenu() {
+    ctx. fillStyle = "#224";
+    ctx. fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "White";
+    ctx.font = "30px 'Press Start 2P'";
+    ctx.fillText("VET CLINIC", 40, 80);
+
+    ctx.font = "20px 'Press Start 2P'";
+    ctx.fillText("Your pet is sick!", 40, 150);
+    ctx.fillText("Sickness Level: "+Math.floor(petStats.sicknessLevel), 40, 190);
+        
+    ctx.fillText("1. Basic Treatment (Heals 40%)", 40, 260);
+    ctx.fillText("2. Advanced Treatment (Heals 80%)", 40, 320);
+    ctx.fillText("ESC to Exit", 40, 400);
+
+}
+document.addEventListener("keydown", (e) => {
+    if (gameState === "vet") {
+        // Basic Treatment (Option 1)
+        if (e.key === "1") {
+            petStats.health += 40;
+            if (petStats.health > 100) petStats.health = 100;
+            petStats.sicknessLevel = 0;
+            petStats.isSick = false;
+            gameState = "game";
+            
+        }
+        // Full Treatment (Option 2)
+        if (e.key === "2") {
+            petStats.health = 100;
+            petStats.sicknessLevel = 0;
+            petStats.isSick = false;
+            gameState = "game";
+
+        }
+        if (e.key === "Escape") {
+            gameState = "game";
+        }
+    }
+});
+petStats.money = 100;
+const basicCost = 15;
+const fullCost = 35;
+
+if (e.key === "1" && petStats.money >= basicCost) {
+    petStats.money -= basicCost;
+    // heal
+}
