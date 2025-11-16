@@ -12,7 +12,7 @@ let foundActionMenu = false;
 let foundShop = false;
 
 // === WORLD CONFIGURATION ===
-const TILE_SIZE = 10;
+const TILE_SIZE = 40;
 const WORLD_COLS = 50;
 const WORLD_ROWS = 50;
 const VISIBLE_COLS = canvas.width / TILE_SIZE;
@@ -30,7 +30,6 @@ for (let y = 0; y < WORLD_ROWS; y++) {
       y === 0 ||
       x === WORLD_COLS - 1 ||
       y === WORLD_ROWS - 1 
-      //Math.random() < 0.1
     ) {
       row.push(1); // wall
     } else {
