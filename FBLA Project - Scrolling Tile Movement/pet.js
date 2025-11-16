@@ -28,10 +28,10 @@ document.addEventListener("keydown", (e) => {
 });
 
 function drawInventory() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Background
-  ctx.fillStyle = "#000000b3";
+  ctx.fillStyle = "#9090aa2e";
   ctx.fillRect(30, 30, canvas.width-60, canvas.height-60);
 
   ctx.fillStyle = "white";
@@ -71,9 +71,19 @@ function updateDaySystem() {
     lastDayTime = now;
   }
 
-ctx.fillStyle = "white";
+  ctx.fillStyle = "white";
   ctx.font = "30px 'Press Start 2P'";
   ctx.textAlign = "left";
   ctx.textBaseline = "bottom";
-  ctx.fillText(`Day ${day} - Money: $${money}`, 20, canvas.height - 20);
+  ctx.fillText(`Day ${day}`, 20, canvas.height - 20);
+
+  ctx.fillStyle = "white";
+  ctx.font = "30px 'Press Start 2P'";
+  ctx.textAlign = "right";
+  ctx.textBaseline = "bottom";
+  ctx.fillText(`$${money}`, canvas.width - 20, canvas.height - 20);
+
+
+  
+    
 }

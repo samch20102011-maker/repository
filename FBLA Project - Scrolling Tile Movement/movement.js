@@ -183,7 +183,7 @@ function placeStructure(structure) {
 }
 
 // Place some random structures
-for (let i = 0; i < 10; i++) placeStructure(tree);
+for (let i = 0; i < 20; i++) placeStructure(tree);
 for (let i = 0; i < 5; i++) placeStructure(rock);
 for (let i = 0; i < 3; i++) placeStructure(house);
 for (let i = 0; i < 1; i++) placeStructure(overworldShop);
@@ -275,6 +275,7 @@ function update() {
       if (tile === 3.5) {
         lastOverworldX = player.tileX
         lastOverworldY = player.tileY + 1
+        opendoor.currentTime = 0;
         opendoor.play()
 
         startFade(() => {
@@ -292,6 +293,7 @@ function update() {
       else if (tile === 4.2) {
         lastOverworldX = player.tileX
         lastOverworldY = player.tileY + 1
+        opendoor.currentTime = 0;
         opendoor.play()
 
         startFade(() => {
@@ -309,6 +311,7 @@ function update() {
       else if (tile === 5.2) {
         lastOverworldX = player.tileX
         lastOverworldY = player.tileY + 1
+        opendoor.currentTime = 0;
         opendoor.play()
 
         startFade(() => {
@@ -324,6 +327,7 @@ function update() {
 
       // Leave house
       else if (tile === 3.6) {
+        opendoor.currentTime = 0;
         opendoor.play()
         startFade(() => {
           currentMap = world;
@@ -338,6 +342,7 @@ function update() {
 
       // Leave shop
       else if (tile === 4.6) {
+        opendoor.currentTime = 0;
         opendoor.play()
         startFade(() => {
           currentMap = world;
@@ -352,6 +357,7 @@ function update() {
 
       // Leave player's house
       else if (tile === 5.4) {
+        opendoor.currentTime = 0;
         opendoor.play()
         startFade(() => {
           currentMap = world;
@@ -539,8 +545,20 @@ function drawMenu() {
   ctx.fillText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60);
   ctx.strokeText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60)
 
+  // bottom text
+  ctx.fillStyle = "white"
+  ctx.font = "20px 'Press Start 2P'";
+  ctx.textAlign = "left"
+  ctx.textBaseline = "bottom"
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.fillText("Use up and down arrow keys to navigate", 20, canvas.height - 20)
+  ctx.strokeText("Use up and down arrow keys to navigate", 20, canvas.height - 20)
+
   // menu options
   ctx.font = "40px 'Press Start 2P'";
+  ctx.textAlign = "center"
+  ctx.textBaseline = "middle"
   menuOptions.forEach((option, i) => {
     const yPos = canvas.height / 2 + i * 60 + 50;
     if (i === menuSelection) {
@@ -599,9 +617,10 @@ instructionsText.forEach((line, i) => {
 
 function gameLoop() {
   if (gameState === "game") {
-    updateDaySystem()
     update()
     draw()
+    updateDaySystem()
+
   }
   else if (gameState === "menu") {
     drawMenu();
