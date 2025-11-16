@@ -515,9 +515,20 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "ArrowDown") menuSelection = (menuSelection + 1) % menuOptions.length;
     
     if (e.key === "Enter") {
-      if (menuSelection === 0) gameState = "game";
-      else if (menuSelection === 1) gameState = "instructions";
-  
+      if (menuSelection === 0) {
+        startingMessage();
+        petPrompt()
+
+        if (petStats.name) {
+          lastStatUpdate = Date.now();
+          lastDayTime = Date.now();
+          gameState = "game";
+        }
+      
+    }
+      else if (menuSelection === 1) {
+        gameState = "instructions";
+      }
     }
   }
   else if (gameState === "instructions") {
@@ -542,8 +553,8 @@ function drawMenu() {
   ctx.textAlign = "center";
   ctx.strokeStyle = "black";
   ctx.lineWidth = 1;
-  ctx.fillText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60);
-  ctx.strokeText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 60)
+  ctx.fillText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 150);
+  ctx.strokeText("My Virtual Pet", canvas.width / 2, canvas.height / 2 - 150)
 
   // bottom text
   ctx.fillStyle = "white"
@@ -552,15 +563,18 @@ function drawMenu() {
   ctx.textBaseline = "bottom"
   ctx.strokeStyle = "black";
   ctx.lineWidth = 1;
-  ctx.fillText("Use up and down arrow keys to navigate", 20, canvas.height - 20)
-  ctx.strokeText("Use up and down arrow keys to navigate", 20, canvas.height - 20)
+  ctx.fillText("Use up and down arrow keys to navigate", 20, canvas.height - 70)
+  ctx.strokeText("Use up and down arrow keys to navigate", 20, canvas.height - 70)
+  
+  ctx.fillText("Use enter to press a button", 120, canvas.height - 20)
+  ctx.strokeText("Use enter to press a button", 120, canvas.height - 20)
 
   // menu options
   ctx.font = "40px 'Press Start 2P'";
   ctx.textAlign = "center"
   ctx.textBaseline = "middle"
   menuOptions.forEach((option, i) => {
-    const yPos = canvas.height / 2 + i * 60 + 50;
+    const yPos = canvas.height / 2 + i * 60 + 0;
     if (i === menuSelection) {
       ctx.fillStyle = "rgba(0, 116, 248, 1)";
       ctx.strokeStyle = "#fffb00ff"
@@ -594,8 +608,7 @@ function drawInstructions() {
   "G = Toggle Grid (debug)",
   "E = Inventory",
   "",
-  "Objective: Explore, visit shops,",
-  "and take care of your virtual pet!",
+  "", // In these three blank spaces we can write new controls if we add new features
   "",
   "Press ESC to return to Menu"
 ];
@@ -612,28 +625,3 @@ instructionsText.forEach((line, i) => {
 });
 
 }
-
-// === GAMELOOP ===
-
-function gameLoop() {
-  if (gameState === "game") {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    update();
-    draw();
-    updateDaySystem();
-
-  }
-  else if (gameState === "menu") {
-    drawMenu();
-  }
-  else if (gameState === "instructions") {
-    drawInstructions();
-  }
-  else if (gameState === "inventory") {
-    drawInventory();
-  }
-
-  requestAnimationFrame(gameLoop);
-}
-
-requestAnimationFrame(gameLoop);
