@@ -57,6 +57,7 @@ function petPrompt() {
 // === UPDATE STATS ===
 let hungerDecay = 2;
 let happinessDecay = 1;
+let healthDecay = 0;
 
 let lastStatUpdate = Date.now();
 const statUpdateMS = 2000; // Updates every 2 seconds
@@ -64,20 +65,32 @@ const statUpdateMS = 2000; // Updates every 2 seconds
 function updatePetStats() {
   const now = Date.now();
 
+  if (petStats.hunger < 30 || petStats.happiness < 30) {
+    healthDecay = 1;
+  }
+
+  if (petStats.hunger > 30 && petStats.happiness > 30) {
+    healthDecay = 0;
+  }
+
   if (now - lastStatUpdate >= statUpdateMS) {
 
     petStats.hunger -= hungerDecay;
     petStats.happiness -= happinessDecay;
+    petStats.health -= healthDecay;
 
     // Clamp values so they never go below 0 or above 100
     petStats.hunger = Math.max(0, Math.min(100, petStats.hunger));
     petStats.happiness = Math.max(0, Math.min(100, petStats.happiness));
+    petStats.health = Math.max(0, Math.min(100, petStats.health));
 
     petStats.hunger = Math.round(petStats.hunger * 10) / 10;
     petStats.happiness = Math.round(petStats.happiness * 10) / 10;
+    petStats.health = Math.round(petStats.health * 10) / 10;
 
     lastStatUpdate = now;
   }
+
 }
 
 
