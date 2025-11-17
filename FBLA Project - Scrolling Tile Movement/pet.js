@@ -16,7 +16,7 @@ const petStats = {
 };
 
 function startingMessage() {
-  alert("You moved to a new town and you decided to get a new pet!")
+  alert("You moved to a new town and you decided to get a new pet! (You, the player, are the red square)")
   alert("Explore, visit shops, and take care of your new pet!")
   alert("You get $100 per day to spend on your pet's necessities.")
 
@@ -300,25 +300,50 @@ function doAction(index) {
 }
 
 // === USE ITEMS SYSTEM ===
-let useItemSelection = 0;
-let useItemOptions = [
-  "Food",
-  "Toy",
-  "Ball",
-  "Apple",
-  "Exit"
-];
+function useItem() {
+  let itemPrompt = ""
+  itemPrompt = prompt("What item would you like to use? Items: Apple, Toy, Ball").toLowerCase()
 
-document.addEventListener("keydown", (e) => {
-  if (gameState === "shop") {
-    if (e.key === "ArrowUp") shopSelection = (shopSelection + shopOptions.length - 1) % shopOptions.length;
-    if (e.key === "ArrowDown") shopSelection = (shopSelection + 1) % shopOptions.length;
+  if (!itemPrompt) return;
 
-    if (e.key === "Enter") {
-      doShopAction(shopSelection)
+  else if (itemPrompt === "apple") {
+    if (inventory.apples > 0) {
+      alert(`You fed ${petStats.name} 1 apple which increased its health (+10) and made it less hungry (+15). You now have ${inventory.apples - 1} apples left.`)
+      petStats.health += 10
+      petStats.hunger += 15
+      inventory.apples -= 1
+    }
+    else {
+      alert("You have no apples.")
+    }
+
+  }
+  else if (itemPrompt === "toy") {
+    if (inventory.toys > 0) {
+      alert(`You gave ${petStats.name} a toy which increased happiness (+25). You now have ${inventory.toys - 1} toys left.`)
+      petStats.happiness += 25
+      inventory.toys -= 1
+    }
+    else {
+      alert("You have no toys.")
+    }
+
+  }
+  else if (itemPrompt === "ball") {
+    if (inventory.balls > 0) {
+    alert(`You played fetch with ${petStats.name} which made it more happy (+40) but it also got hungry (-10). You now have ${inventory.balls - 1} balls left.`)
+    petStats.happiness += 40
+    petStats.hunger -= 10
+    inventory.balls -= 1
+    }
+    else {
+      alert("You have no balls.")
     }
   }
-});
+  else {
+    alert("Invalid choice.")
+  }
+}
 
 // === SHOP PAGE ===
 let shopSelection = 0;
@@ -412,7 +437,7 @@ function doShopAction(index) {
 // === GAMELOOP ===
 
 function gameLoop() {
-  
+
   if (gameState === "game") {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     update();
