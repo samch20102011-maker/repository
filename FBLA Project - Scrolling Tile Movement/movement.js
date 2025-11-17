@@ -12,7 +12,7 @@ let foundActionMenu = false;
 let foundShop = false;
 
 // === WORLD CONFIGURATION ===
-const TILE_SIZE = 10;
+const TILE_SIZE = 40;
 const WORLD_COLS = 50;
 const WORLD_ROWS = 50;
 const VISIBLE_COLS = canvas.width / TILE_SIZE;
